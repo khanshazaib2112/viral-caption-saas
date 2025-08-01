@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viral Shorts Caption Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f0f0f, #1f1f1f);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .card {
+      background-color: #141414;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #0ff;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border: 1px solid #0ff;
+    }
+    button {
+      background: linear-gradient(90deg, #0ff, #09f);
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .results {
+      margin-top: 1.5rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid #2f2f2f;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎮 Viral Shorts Caption Generator</h1>
+    <input type="text" id="videoTopic" placeholder="Enter your video topic (e.g. Free Fire montage)..." />
+    <select id="tone">
+      <option value="funny">Funny</option>
+      <option value="emotional">Emotional</option>
+      <option value="hook">Hook-Based</option>
+      <option value="motivational">Motivational</option>
+    </select>
+    <button onclick="generateCaptions()">⚡ Generate Captions</button>
+    <div class="results" id="output"></div>
+    <div class="footer">Made for creators. Powered by AI. 🚀</div>
+  </div>
+
+  <script>
+    async function generateCaptions() {
+      const topic = document.getElementById('videoTopic').value.trim();
+      const tone = document.getElementById('tone').value;
+      const output = document.getElementById('output');
+
+      if (!topic) {
+        output.innerHTML = '<p>Please enter a video topic.</p>';
+        return;
+      }
+
+      output.innerHTML = '⏳ Generating captions...';
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ topic, tone })
+      });
+
+      const data = await response.json();
+      const captions = data.choices[0].message.content.split('\n').filter(line => line.trim());
+      output.innerHTML = '<b>Generated Captions:</b><ul>' + captions.map(c => `<li>${c}</li>`).join('') + '</ul>';
+    }
+  </script>
+</body>
+</html>
